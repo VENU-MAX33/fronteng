@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Achievements - Sports Arena Hub</title>
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <div class="logo-icon">🏆</div>
+                    Sports Arena Hub
+                </div>
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="register.html">Register Team</a>
+                    <a href="live_score.html">Live Matches</a>
+                    <a href="achievements.html" class="active">Achievements</a>
+                    <a href="admin.html">🎮 Host Match</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero" style="padding: 4rem 2rem;">
+        <div class="container">
+            <h1>🏆 Achievements & Stats</h1>
+            <p>Top performers across all sports</p>
+        </div>
+    </section>
+
+    <section class="container">
+        <!-- Sport Tabs -->
+        <div class="tabs" style="justify-content: center;">
+            <button class="tab active" onclick="showSport('cricket')">🏏 Cricket</button>
+            <button class="tab" onclick="showSport('kabaddi')">🤼 Kabaddi</button>
+            <button class="tab" onclick="showSport('volleyball')">🏐 Volleyball</button>
+        </div>
+
+        <!-- Cricket Achievements -->
+        <div id="cricketTab" class="tab-content active">
+            <div style="max-width: 800px; margin: 2rem auto;">
+
+                <!-- Highest Scorer -->
+                <h3 style="margin-bottom: 1rem; color: var(--cricket-primary);">
+                    <i class="fas fa-trophy"></i> Highest Individual Score
+                </h3>
+                <div id="cricketHighestScore">
+                    <div class="achievement-card">
+                        <div class="achievement-rank">🥇</div>
+                        <div class="achievement-info">
+                            <h4>Loading...</h4>
+                            <p>Fetching data</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Most Wickets -->
+                <h3 style="margin: 2rem 0 1rem; color: var(--cricket-primary);">
+                    <i class="fas fa-bowling-ball"></i> Most Wickets in a Match
+                </h3>
+                <div id="cricketMostWickets">
+                    <div class="achievement-card">
+                        <div class="achievement-rank">🥇</div>
+                        <div class="achievement-info">
+                            <h4>Loading...</h4>
+                            <p>Fetching data</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Highest Team Score -->
+                <h3 style="margin: 2rem 0 1rem; color: var(--cricket-primary);">
+                    <i class="fas fa-users"></i> Highest Team Score
+                </h3>
+                <div id="cricketHighestTeam">
+                    <div class="achievement-card">
+                        <div class="achievement-rank">🥇</div>
+                        <div class="achievement-info">
+                            <h4>Loading...</h4>
+                            <p>Fetching data</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kabaddi Achievements -->
+        <div id="kabaddiTab" class="tab-content">
+            <div style="max-width: 800px; margin: 2rem auto;">
+
+                <!-- Highest Raid Points -->
+                <h3 style="margin-bottom: 1rem; color: var(--kabaddi-primary);">
+                    <i class="fas fa-running"></i> Highest Raid Points
+                </h3>
+                <div id="kabaddiHighestRaid">
+                    <div class="achievement-card">
+                        <div class="achievement-rank">🥇</div>
+                        <div class="achievement-info">
+                            <h4>Loading...</h4>
+                            <p>Fetching data</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Most Tackles -->
+                <h3 style="margin: 2rem 0 1rem; color: var(--kabaddi-primary);">
+                    <i class="fas fa-hand-rock"></i> Most Tackles in a Match
+                </h3>
+                <div id="kabaddiMostTackles">
+                    <div class="achievement-card">
+                        <div class="achievement-rank">🥇</div>
+                        <div class="achievement-info">
+                            <h4>Loading...</h4>
+                            <p>Fetching data</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Highest Team Score -->
+                <h3 style="margin: 2rem 0 1rem; color: var(--kabaddi-primary);">
+                    <i class="fas fa-users"></i> Highest Team Score
+                </h3>
+                <div id="kabaddiHighestTeam">
+                    <div class="achievement-card">
+                        <div class="achievement-rank">🥇</div>
+                        <div class="achievement-info">
+                            <h4>Loading...</h4>
+                            <p>Fetching data</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Volleyball Achievements -->
+        <div id="volleyballTab" class="tab-content">
+            <div style="max-width: 800px; margin: 2rem auto;">
+
+                <!-- Highest Points in a Set -->
+                <h3 style="margin-bottom: 1rem; color: var(--volleyball-primary);">
+                    <i class="fas fa-volleyball-ball"></i> Best Rally Win Margin
+                </h3>
+                <div id="volleyballHighestMargin">
+                    <div class="achievement-card">
+                        <div class="achievement-rank">🥇</div>
+                        <div class="achievement-info">
+                            <h4>Loading...</h4>
+                            <p>Fetching data</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Most Points -->
+                <h3 style="margin: 2rem 0 1rem; color: var(--volleyball-primary);">
+                    <i class="fas fa-trophy"></i> Highest Point Total
+                </h3>
+                <div id="volleyballMostPoints">
+                    <div class="achievement-card">
+                        <div class="achievement-rank">🥇</div>
+                        <div class="achievement-info">
+                            <h4>Loading...</h4>
+                            <p>Fetching data</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Matches -->
+        <h2 style="margin-top: 3rem;">Recent Matches</h2>
+        <div id="recentMatches" class="card-grid" style="margin-top: 1rem;">
+            <div class="text-center" style="grid-column: 1 / -1; padding: 2rem;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 1.5rem; color: var(--text-light);"></i>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p style="font-size: 1.5rem; margin-bottom: 1rem;">🏆</p>
+            <p><strong>Sports Arena Hub</strong></p>
+            <p>© 2026 Sports Arena Hub • Made with ❤️ for Sports Lovers</p>
+        </div>
+    </footer>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof updateNavAuth === 'function') updateNavAuth();
+            loadAchievements();
+            loadRecentMatches();
+        });
+
+        function showSport(sport) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(`${sport}Tab`).classList.add('active');
+        }
+
+        async function loadAchievements() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/achievements`);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    renderAchievements(data);
+                } else {
+                    showPlaceholderAchievements();
+                }
+            } catch (error) {
+                console.error('Error loading achievements:', error);
+                showPlaceholderAchievements();
+            }
+        }
+
+        function renderAchievements(data) {
+            // Render Cricket
+            if (data.cricket) {
+                renderAchievementList('cricketHighestScore', data.cricket.highest_scores || []);
+                renderAchievementList('cricketMostWickets', data.cricket.most_wickets || []);
+                renderAchievementList('cricketHighestTeam', data.cricket.highest_team || []);
+            }
+
+            // Render Kabaddi
+            if (data.kabaddi) {
+                renderAchievementList('kabaddiHighestRaid', data.kabaddi.highest_raids || []);
+                renderAchievementList('kabaddiMostTackles', data.kabaddi.most_tackles || []);
+                renderAchievementList('kabaddiHighestTeam', data.kabaddi.highest_team || []);
+            }
+
+            // Render Volleyball
+            if (data.volleyball) {
+                renderAchievementList('volleyballHighestMargin', data.volleyball.highest_margin || []);
+                renderAchievementList('volleyballMostPoints', data.volleyball.most_points || []);
+            }
+        }
+
+        function renderAchievementList(containerId, achievements) {
+            const container = document.getElementById(containerId);
+            const ranks = ['🥇', '🥈', '🥉'];
+
+            if (!achievements || achievements.length === 0) {
+                container.innerHTML = `
+          <div class="achievement-card" style="opacity: 0.6;">
+            <div class="achievement-rank">—</div>
+            <div class="achievement-info">
+              <h4>No data yet</h4>
+              <p>Play matches to earn achievements!</p>
+            </div>
+          </div>
+        `;
+                return;
+            }
+
+            container.innerHTML = achievements.slice(0, 3).map((a, i) => `
+        <div class="achievement-card">
+          <div class="achievement-rank">${ranks[i] || (i + 1)}</div>
+          <div class="achievement-info">
+            <h4>${a.player || a.team || 'Unknown'}</h4>
+            <p>vs ${a.opponent || 'N/A'} • ${a.match_date || ''}</p>
+          </div>
+          <div class="achievement-stat">
+            <div class="value">${a.value || 0}</div>
+            <div class="label">${a.label || 'points'}</div>
+          </div>
+        </div>
+      `).join('');
+        }
+
+        function showPlaceholderAchievements() {
+            const placeholder = `
+        <div class="achievement-card" style="opacity: 0.6;">
+          <div class="achievement-rank">—</div>
+          <div class="achievement-info">
+            <h4>No data yet</h4>
+            <p>Play matches to earn achievements!</p>
+          </div>
+        </div>
+      `;
+
+            document.getElementById('cricketHighestScore').innerHTML = placeholder;
+            document.getElementById('cricketMostWickets').innerHTML = placeholder;
+            document.getElementById('cricketHighestTeam').innerHTML = placeholder;
+            document.getElementById('kabaddiHighestRaid').innerHTML = placeholder;
+            document.getElementById('kabaddiMostTackles').innerHTML = placeholder;
+            document.getElementById('kabaddiHighestTeam').innerHTML = placeholder;
+            document.getElementById('volleyballHighestMargin').innerHTML = placeholder;
+            document.getElementById('volleyballMostPoints').innerHTML = placeholder;
+        }
+
+        async function loadRecentMatches() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/matches?limit=6`);
+
+                if (response.ok) {
+                    const matches = await response.json();
+                    renderRecentMatches(matches);
+                } else {
+                    showNoRecentMatches();
+                }
+            } catch (error) {
+                console.error('Error loading matches:', error);
+                showNoRecentMatches();
+            }
+        }
+
+        function renderRecentMatches(matches) {
+            const container = document.getElementById('recentMatches');
+
+            if (!matches || matches.length === 0) {
+                showNoRecentMatches();
+                return;
+            }
+
+            container.innerHTML = matches.map(match => `
+        <div class="match-card ${match.status}" onclick="window.location.href='match-details.html?id=${match.id}'">
+          <div class="match-header">
+            <span class="match-badge badge-${match.sport}">${capitalize(match.sport)}</span>
+          </div>
+          <div class="match-teams">${match.team1_name || match.team1} vs ${match.team2_name || match.team2}</div>
+          <div class="match-score">${formatScore(match)}</div>
+        </div>
+      `).join('');
+        }
+
+        function formatScore(match) {
+            // Use score_summary from API if available
+            if (match.score_summary) {
+                return match.score_summary;
+            }
+            if (match.result) {
+                return match.result;
+            }
+            if (match.status === 'UPCOMING') {
+                return 'Upcoming';
+            }
+            return 'N/A';
+        }
+
+        function capitalize(str) {
+            return str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
+        }
+
+        function showNoRecentMatches() {
+            document.getElementById('recentMatches').innerHTML = `
+        <div class="text-center" style="grid-column: 1 / -1; padding: 2rem; color: var(--text-light);">
+          <p>No recent matches</p>
+        </div>
+      `;
+        }
+    </script>
+</body>
+
+</html>
