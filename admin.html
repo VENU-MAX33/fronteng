@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Host Match - Sports Arena Hub</title>
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        .team-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .team-select-card {
+            background: var(--light-bg);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .team-select-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .team-select-card.selected {
+            border-color: var(--accent);
+            background: rgba(var(--accent-rgb), 0.1);
+            box-shadow: 0 4px 15px rgba(var(--accent-rgb), 0.2);
+        }
+
+        .team-select-card .team-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .team-select-card h4 {
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .team-select-card p {
+            margin: 0.25rem 0 0;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .team-select-card .check-icon {
+            display: none;
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: var(--accent);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .team-select-card.selected .check-icon {
+            display: flex;
+        }
+
+        .team-select-card {
+            position: relative;
+        }
+
+        .selection-summary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--light-bg);
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .selection-summary .team-box {
+            text-align: center;
+            padding: 0.5rem 1.5rem;
+        }
+
+        .selection-summary .vs {
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 1.2rem;
+        }
+
+        .no-teams-msg {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <div class="logo-icon">🏆</div>
+                    Sports Arena Hub
+                </div>
+                <div class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="register.html">Register Team</a>
+                    <a href="live_score.html">Live Matches</a>
+                    <a href="achievements.html">Achievements</a>
+                    <a href="admin.html" class="active">🎮 Host Match</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero" style="padding: 4rem 2rem;">
+        <div class="container">
+            <h1>🎮 Host a Match</h1>
+            <p>Set up a live match and start scoring!</p>
+        </div>
+    </section>
+
+    <!-- Step 1: Admin Details -->
+    <section class="container" id="step1">
+        <h2>Step 1: Match Official Details</h2>
+        <div class="form-container" style="max-width: 600px;">
+            <p style="color: var(--text-light); margin-bottom: 1.5rem;">
+                Enter your name and umpire details. All fields are optional.
+            </p>
+
+            <div class="form-group">
+                <label for="adminName"><i class="fas fa-user-tie"></i> Admin / Host Name</label>
+                <input type="text" id="adminName" placeholder="Your name (optional)">
+            </div>
+
+            <div class="form-group">
+                <label for="umpire1"><i class="fas fa-flag"></i> Umpire 1 Name</label>
+                <input type="text" id="umpire1" placeholder="First umpire (optional)">
+            </div>
+
+            <div class="form-group">
+                <label for="umpire2"><i class="fas fa-flag"></i> Umpire 2 Name</label>
+                <input type="text" id="umpire2" placeholder="Second umpire (optional)">
+            </div>
+
+            <button type="button" class="btn" style="width: 100%;" onclick="proceedToStep2()">
+                Continue to Sport Selection →
+            </button>
+        </div>
+    </section>
+
+    <!-- Step 2: Sport Selection -->
+    <section class="container hidden" id="step2">
+        <h2>Step 2: Choose Sport</h2>
+
+        <div id="adminSummary"
+            style="text-align: center; padding: 1rem; background: var(--light-bg); border-radius: 8px; margin-bottom: 2rem;">
+            <span id="adminNameDisplay" style="font-weight: 600;"></span>
+            <button type="button" onclick="showStep(1)"
+                style="margin-left: 1rem; background: none; border: none; color: var(--accent); cursor: pointer; font-weight: 600;">
+                Edit ←
+            </button>
+        </div>
+
+        <div class="sport-selector">
+            <div class="sport-card cricket" onclick="selectSport('cricket')">
+                <span class="check-badge"><i class="fas fa-check"></i></span>
+                <span class="sport-icon">🏏</span>
+                <h3>Cricket</h3>
+                <p>Overs-based scoring</p>
+            </div>
+            <div class="sport-card kabaddi" onclick="selectSport('kabaddi')">
+                <span class="check-badge"><i class="fas fa-check"></i></span>
+                <span class="sport-icon">🤼</span>
+                <h3>Kabaddi</h3>
+                <p>Timer-based scoring</p>
+            </div>
+            <div class="sport-card volleyball" onclick="selectSport('volleyball')">
+                <span class="check-badge"><i class="fas fa-check"></i></span>
+                <span class="sport-icon">🏐</span>
+                <h3>Volleyball</h3>
+                <p>Point-based scoring</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Step 3: Team Selection -->
+    <section class="container hidden" id="step3">
+        <h2>Step 3: Select Teams</h2>
+
+        <div
+            style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; padding: 1rem; background: var(--light-bg); border-radius: 8px;">
+            <span id="sportIconDisplay2" style="font-size: 2.5rem;"></span>
+            <div>
+                <div style="font-weight: 600; font-size: 1.2rem;" id="sportNameDisplay2"></div>
+                <div style="color: var(--text-light); font-size: 0.9rem;">Selected Sport</div>
+            </div>
+            <button type="button" onclick="showStep(2)"
+                style="margin-left: auto; background: none; border: none; color: var(--accent); cursor: pointer; font-weight: 600;">
+                Change →
+            </button>
+        </div>
+
+        <div style="max-width: 900px; margin: 0 auto;">
+            <h3 style="margin-bottom: 0.5rem;"><i class="fas fa-home"></i> Select Team 1 (Home)</h3>
+            <div class="team-cards-grid" id="team1Cards">
+                <div class="no-teams-msg">Loading teams...</div>
+            </div>
+
+            <div class="selection-summary" id="selectionSummary" style="display: none;">
+                <div class="team-box">
+                    <div style="font-size: 1.5rem;" id="team1Icon">🏆</div>
+                    <div style="font-weight: 600;" id="team1SelectedName">Select Team 1</div>
+                </div>
+                <div class="vs">VS</div>
+                <div class="team-box">
+                    <div style="font-size: 1.5rem;" id="team2Icon">🏆</div>
+                    <div style="font-weight: 600;" id="team2SelectedName">Select Team 2</div>
+                </div>
+            </div>
+
+            <h3 style="margin: 1.5rem 0 0.5rem;"><i class="fas fa-plane"></i> Select Team 2 (Away)</h3>
+            <div class="team-cards-grid" id="team2Cards">
+                <div class="no-teams-msg">Loading teams...</div>
+            </div>
+
+            <button type="button" class="btn" style="width: 100%; margin-top: 2rem;" onclick="proceedToStep4()"
+                id="continueToConfigBtn" disabled>
+                Continue to Match Settings →
+            </button>
+        </div>
+    </section>
+
+    <!-- Step 4: Match Configuration -->
+    <section class="container hidden" id="step4">
+        <h2>Step 4: Match Settings</h2>
+        <div class="form-container" style="max-width: 600px;">
+
+            <div class="selection-summary">
+                <div class="team-box">
+                    <div style="font-size: 1.5rem;" id="finalTeam1Icon">🏆</div>
+                    <div style="font-weight: 600;" id="finalTeam1Name">Team 1</div>
+                </div>
+                <div class="vs">VS</div>
+                <div class="team-box">
+                    <div style="font-size: 1.5rem;" id="finalTeam2Icon">🏆</div>
+                    <div style="font-weight: 600;" id="finalTeam2Name">Team 2</div>
+                </div>
+            </div>
+
+            <button type="button" onclick="showStep(3)"
+                style="display: block; margin: 0 auto 2rem; background: none; border: none; color: var(--accent); cursor: pointer; font-weight: 600;">
+                ← Change Teams
+            </button>
+
+            <!-- Cricket Config -->
+            <div id="cricketConfig" class="hidden">
+                <div class="form-group">
+                    <label for="overs"><i class="fas fa-circle-notch"></i> Total Overs (1-20)</label>
+                    <input type="number" id="overs" min="1" max="20" value="10" required>
+                    <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.5rem;">
+                        Number of overs per innings
+                    </p>
+                </div>
+            </div>
+
+            <!-- Kabaddi Config -->
+            <div id="kabaddiConfig" class="hidden">
+                <div class="form-group">
+                    <label for="duration"><i class="fas fa-clock"></i> Match Duration (1-40 minutes)</label>
+                    <input type="number" id="duration" min="1" max="40" value="20" required>
+                    <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.5rem;">
+                        Duration per half (total match = 2 halves)
+                    </p>
+                </div>
+            </div>
+
+            <!-- Volleyball Config -->
+            <div id="volleyballConfig" class="hidden">
+                <div class="form-group">
+                    <label><i class="fas fa-trophy"></i> Match Type</label>
+                    <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+                        <label
+                            style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-weight: 500;">
+                            <input type="radio" name="volleyType" value="ttp" checked style="width: auto;">
+                            TTP (Target Points)
+                        </label>
+                        <label
+                            style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-weight: 500;">
+                            <input type="radio" name="volleyType" value="match" style="width: auto;">
+                            Match Points
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="targetPoints"><i class="fas fa-bullseye"></i> Target Points (10-40)</label>
+                    <input type="number" id="targetPoints" min="10" max="40" value="25" required>
+                    <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.5rem;">
+                        First team to reach this score wins
+                    </p>
+                </div>
+            </div>
+
+            <!-- Match Details -->
+            <div class="form-group">
+                <label for="venue"><i class="fas fa-map-marker-alt"></i> Venue (Optional)</label>
+                <input type="text" id="venue" placeholder="Match venue/location">
+            </div>
+
+            <button type="button" class="btn btn-success" style="width: 100%; font-size: 1.1rem; padding: 1rem;"
+                onclick="startMatch()">
+                <i class="fas fa-play"></i> Start Match
+            </button>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p style="font-size: 1.5rem; margin-bottom: 1rem;">🏆</p>
+            <p><strong>Sports Arena Hub</strong></p>
+            <p>© 2026 Sports Arena Hub • Made with ❤️ for Sports Lovers</p>
+        </div>
+    </footer>
+
+    <script src="../js/config.js"></script>
+    <script>
+        // State Management
+        let adminDetails = { name: '', umpire1: '', umpire2: '' };
+        let selectedSport = '';
+        let selectedTeam1 = null;
+        let selectedTeam2 = null;
+        let teamsData = [];
+
+        const sportIcons = { cricket: '🏏', kabaddi: '🤼', volleyball: '🏐' };
+        const sportNames = { cricket: 'Cricket', kabaddi: 'Kabaddi', volleyball: 'Volleyball' };
+
+        // Step Navigation
+        function showStep(stepNum) {
+            document.querySelectorAll('section[id^="step"]').forEach(s => s.classList.add('hidden'));
+            document.getElementById(`step${stepNum}`).classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Step 1: Save Admin Details
+        function proceedToStep2() {
+            adminDetails.name = document.getElementById('adminName').value.trim() || 'Match Host';
+            adminDetails.umpire1 = document.getElementById('umpire1').value.trim();
+            adminDetails.umpire2 = document.getElementById('umpire2').value.trim();
+
+            // Update summary display
+            let summaryText = `Host: ${adminDetails.name}`;
+            if (adminDetails.umpire1) summaryText += ` | Umpire 1: ${adminDetails.umpire1}`;
+            if (adminDetails.umpire2) summaryText += ` | Umpire 2: ${adminDetails.umpire2}`;
+            document.getElementById('adminNameDisplay').textContent = summaryText;
+
+            showStep(2);
+        }
+
+        // Step 2: Select Sport
+        function selectSport(sport) {
+            selectedSport = sport;
+
+            document.querySelectorAll('.sport-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.querySelector(`.sport-card.${sport}`).classList.add('selected');
+
+            document.getElementById('sportIconDisplay2').textContent = sportIcons[sport];
+            document.getElementById('sportNameDisplay2').textContent = sportNames[sport];
+
+            // Reset team selections
+            selectedTeam1 = null;
+            selectedTeam2 = null;
+            updateSelectionSummary();
+
+            // Load teams for this sport
+            loadTeams(sport);
+
+            setTimeout(() => showStep(3), 300);
+        }
+
+        // Step 3: Load and Select Teams
+        async function loadTeams(sport) {
+            const team1Container = document.getElementById('team1Cards');
+            const team2Container = document.getElementById('team2Cards');
+
+            team1Container.innerHTML = '<div class="no-teams-msg"><i class="fas fa-spinner fa-spin"></i> Loading teams...</div>';
+            team2Container.innerHTML = '<div class="no-teams-msg"><i class="fas fa-spinner fa-spin"></i> Loading teams...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/teams?sport=${sport}`);
+
+                if (response.ok) {
+                    teamsData = await response.json();
+
+                    if (teamsData.length === 0) {
+                        const noTeamsMsg = `
+                            <div class="no-teams-msg" style="grid-column: 1 / -1;">
+                                <div style="font-size: 3rem; margin-bottom: 1rem;">😕</div>
+                                <p>No ${sportNames[sport]} teams registered yet</p>
+                                <a href="register.html?sport=${sport}" class="btn" style="margin-top: 1rem;">Register a Team</a>
+                            </div>
+                        `;
+                        team1Container.innerHTML = noTeamsMsg;
+                        team2Container.innerHTML = noTeamsMsg;
+                        return;
+                    }
+
+                    // Render team cards for both selections
+                    team1Container.innerHTML = renderTeamCards(teamsData, 1);
+                    team2Container.innerHTML = renderTeamCards(teamsData, 2);
+
+                } else {
+                    throw new Error('Failed to load teams');
+                }
+            } catch (error) {
+                console.error('Error loading teams:', error);
+                const errorMsg = '<div class="no-teams-msg">Error loading teams. Please check backend connection.</div>';
+                team1Container.innerHTML = errorMsg;
+                team2Container.innerHTML = errorMsg;
+            }
+        }
+
+        function renderTeamCards(teams, forTeamSlot) {
+            return teams.map(team => {
+                const captain = team.captain || (team.players?.[0]?.name || 'Captain TBA');
+                const playerCount = team.players?.length || 0;
+                return `
+                    <div class="team-select-card" 
+                         onclick="selectTeam(${forTeamSlot}, ${team.id}, '${team.name.replace(/'/g, "\\'")}', '${team.symbol || sportIcons[selectedSport]}')"
+                         id="team${forTeamSlot}-card-${team.id}">
+                        <div class="check-icon"><i class="fas fa-check"></i></div>
+                        <div class="team-icon">${team.symbol || sportIcons[selectedSport]}</div>
+                        <h4>${team.name}</h4>
+                        <p style="font-weight: 600; margin: 0.5rem 0; color: var(--accent);">👑 ${captain}</p>
+                        <p style="font-size: 0.85rem; color: var(--text-light);">${playerCount} Players</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectTeam(slot, teamId, teamName, teamIcon) {
+            // Prevent selecting same team for both slots
+            if (slot === 1 && selectedTeam2 && selectedTeam2.id === teamId) {
+                alert('This team is already selected as Team 2');
+                return;
+            }
+            if (slot === 2 && selectedTeam1 && selectedTeam1.id === teamId) {
+                alert('This team is already selected as Team 1');
+                return;
+            }
+
+            // Clear previous selection in this slot
+            document.querySelectorAll(`#team${slot}Cards .team-select-card`).forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Select this card
+            const card = document.getElementById(`team${slot}-card-${teamId}`);
+            if (card) card.classList.add('selected');
+
+            // Update state
+            if (slot === 1) {
+                selectedTeam1 = { id: teamId, name: teamName, icon: teamIcon };
+            } else {
+                selectedTeam2 = { id: teamId, name: teamName, icon: teamIcon };
+            }
+
+            updateSelectionSummary();
+        }
+
+        function updateSelectionSummary() {
+            const summary = document.getElementById('selectionSummary');
+            const continueBtn = document.getElementById('continueToConfigBtn');
+
+            if (selectedTeam1 || selectedTeam2) {
+                summary.style.display = 'flex';
+            }
+
+            if (selectedTeam1) {
+                document.getElementById('team1Icon').textContent = selectedTeam1.icon;
+                document.getElementById('team1SelectedName').textContent = selectedTeam1.name;
+            } else {
+                document.getElementById('team1Icon').textContent = '❓';
+                document.getElementById('team1SelectedName').textContent = 'Select Team 1';
+            }
+
+            if (selectedTeam2) {
+                document.getElementById('team2Icon').textContent = selectedTeam2.icon;
+                document.getElementById('team2SelectedName').textContent = selectedTeam2.name;
+            } else {
+                document.getElementById('team2Icon').textContent = '❓';
+                document.getElementById('team2SelectedName').textContent = 'Select Team 2';
+            }
+
+            // Enable continue button only when both teams selected
+            continueBtn.disabled = !(selectedTeam1 && selectedTeam2);
+        }
+
+        // Step 4: Configuration
+        function proceedToStep4() {
+            if (!selectedTeam1 || !selectedTeam2) {
+                alert('Please select both teams');
+                return;
+            }
+
+            // Update final summary
+            document.getElementById('finalTeam1Icon').textContent = selectedTeam1.icon;
+            document.getElementById('finalTeam1Name').textContent = selectedTeam1.name;
+            document.getElementById('finalTeam2Icon').textContent = selectedTeam2.icon;
+            document.getElementById('finalTeam2Name').textContent = selectedTeam2.name;
+
+            // Show appropriate config
+            document.getElementById('cricketConfig').classList.add('hidden');
+            document.getElementById('kabaddiConfig').classList.add('hidden');
+            document.getElementById('volleyballConfig').classList.add('hidden');
+            document.getElementById(`${selectedSport}Config`).classList.remove('hidden');
+
+            showStep(4);
+        }
+
+        // Start Match
+        async function startMatch() {
+            const venue = document.getElementById('venue').value.trim() || 'Not specified';
+            const today = new Date();
+            const dateStr = today.toISOString().split('T')[0];
+            const timeStr = today.toTimeString().split(' ')[0].substring(0, 5);
+
+            let matchData = {
+                sport: selectedSport,
+                team1_id: parseInt(selectedTeam1.id),
+                team2_id: parseInt(selectedTeam2.id),
+                date: dateStr,
+                time: timeStr,
+                venue: venue
+            };
+
+            // Add sport-specific config
+            if (selectedSport === 'cricket') {
+                matchData.total_overs = parseInt(document.getElementById('overs').value);
+            } else if (selectedSport === 'kabaddi') {
+                matchData.half_duration = parseInt(document.getElementById('duration').value);
+            } else if (selectedSport === 'volleyball') {
+                const matchType = document.querySelector('input[name="volleyType"]:checked').value;
+                if (matchType === 'ttp') {
+                    matchData.ttp_points = parseInt(document.getElementById('targetPoints').value);
+                } else {
+                    matchData.total_sets = 3;
+                }
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/matches`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(matchData)
+                });
+
+                if (response.ok) {
+                    const match = await response.json();
+
+                    // Store admin details for scoreboard
+                    localStorage.setItem('current_match_id', match.id);
+                    localStorage.setItem('current_match_sport', selectedSport);
+                    localStorage.setItem('match_admin', JSON.stringify(adminDetails));
+
+                    // Redirect to scoreboard
+                    window.location.href = `scoreboard-${selectedSport}.html?id=${match.id}`;
+                } else {
+                    const error = await response.json();
+                    let errorMsg = 'Failed to create match';
+                    if (error.detail) {
+                        if (typeof error.detail === 'string') {
+                            errorMsg = error.detail;
+                        } else if (Array.isArray(error.detail)) {
+                            errorMsg = error.detail.map(e => e.msg || e.message || JSON.stringify(e)).join('\n');
+                        }
+                    }
+                    alert('Error: ' + errorMsg);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Network error. Please ensure backend is running at ' + API_BASE_URL);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // No auth check needed - open to all
+        });
+    </script>
+</body>
+
+</html>

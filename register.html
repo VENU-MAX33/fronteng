@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register Team - Sports Arena Hub</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    .step-indicator {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      gap: 0.5rem;
+    }
+
+    .step-indicator .step {
+      flex: 1;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      transition: var(--transition);
+    }
+
+    .step-indicator .step.active {
+      background: var(--accent);
+    }
+
+    .player-row {
+      display: grid;
+      grid-template-columns: 1fr 120px 120px 60px;
+      gap: 0.8rem;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      background: var(--light-bg);
+      border-radius: 8px;
+      align-items: end;
+    }
+
+    .player-row input {
+      margin-bottom: 0;
+    }
+
+    .captain-checkbox {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.6rem;
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .captain-checkbox.selected {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .captain-checkbox input {
+      cursor: pointer;
+      margin: 0;
+    }
+
+    @media (max-width: 768px) {
+      .player-row {
+        grid-template-columns: 1fr;
+        gap: 0.6rem;
+      }
+
+      .player-row label {
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">
+          <div class="logo-icon">🏆</div>
+          Sports Arena Hub
+        </div>
+        <div class="nav-links">
+          <a href="index.html">Home</a>
+          <a href="register.html" class="active">Register Team</a>
+          <a href="live_score.html">Live Matches</a>
+          <a href="achievements.html">Achievements</a>
+          <a href="admin.html">🎮 Host Match</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero" style="padding: 4rem 2rem;">
+    <div class="container">
+      <h1>📝 Register Your Team</h1>
+      <p>Join the competition and start playing!</p>
+    </div>
+  </section>
+
+  <section class="container">
+    <div style="max-width: 700px; margin: 0 auto;">
+
+      <!-- Sport Selection Step -->
+      <div class="form-container" id="sportSelectStep">
+        <h2>Step 1: Choose Your Sport</h2>
+        <p style="color: var(--text-light); margin-bottom: 2rem;">Select the sport you want to register a team for.
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+          <button type="button" class="sport-btn" onclick="selectSport('cricket')"
+            style="padding: 2rem; border: 2px solid var(--border); border-radius: 8px; background: white; cursor: pointer; transition: var(--transition);">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🏏</div>
+            <div style="font-weight: 600;">Cricket</div>
+          </button>
+          <button type="button" class="sport-btn" onclick="selectSport('kabaddi')"
+            style="padding: 2rem; border: 2px solid var(--border); border-radius: 8px; background: white; cursor: pointer; transition: var(--transition);">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🤼</div>
+            <div style="font-weight: 600;">Kabaddi</div>
+          </button>
+          <button type="button" class="sport-btn" onclick="selectSport('volleyball')"
+            style="padding: 2rem; border: 2px solid var(--border); border-radius: 8px; background: white; cursor: pointer; transition: var(--transition);">
+            <div style="font-size: 3rem; margin-bottom: 0.5rem;">🏐</div>
+            <div style="font-weight: 600;">Volleyball</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Team Details Step -->
+      <div class="form-container hidden" id="teamDetailsStep">
+        <div class="step-indicator">
+          <div class="step active"></div>
+          <div class="step"></div>
+          <div class="step"></div>
+        </div>
+
+        <h2>Step 2: Team Details</h2>
+
+        <div class="form-group">
+          <label for="teamName"><i class="fas fa-shield-alt"></i> Team Name <span style="color: red;">*</span></label>
+          <input type="text" id="teamName" placeholder="Enter your team name" required>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+          <button type="button" class="btn btn-secondary" onclick="goBackToSportSelection()">← Back</button>
+          <button type="button" class="btn" onclick="proceedToPlayersStep()"
+            style="flex: 1;">Next: Add Players →</button>
+        </div>
+      </div>
+
+      <!-- Players Step -->
+      <div class="form-container hidden" id="playersStep">
+        <div class="step-indicator">
+          <div class="step active"></div>
+          <div class="step active"></div>
+          <div class="step"></div>
+        </div>
+
+        <h2>Step 3: Add Players</h2>
+        <p style="color: var(--text-light); margin-bottom: 1rem;">Add player names, ages (optional), and register numbers (optional). Mark one player as Captain (C).</p>
+
+        <div id="playersContainer" style="margin-bottom: 1.5rem;">
+          <!-- Players will be added here dynamically -->
+        </div>
+
+        <div class="form-group">
+          <label style="margin-bottom: 0.5rem;">Number of Players <span style="color: red;">*</span></label>
+          <div style="display: flex; gap: 0.5rem;">
+            <input type="number" id="playerCount" min="1" max="20" value="11" style="flex: 1;">
+            <button type="button" class="btn" onclick="updatePlayerCount()">Update</button>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+          <button type="button" class="btn btn-secondary" onclick="goBackToTeamDetails()">← Back</button>
+          <button type="button" class="btn" onclick="proceedToReviewStep()"
+            style="flex: 1;">Next: Review →</button>
+        </div>
+      </div>
+
+      <!-- Review Step -->
+      <div class="form-container hidden" id="reviewStep">
+        <div class="step-indicator">
+          <div class="step active"></div>
+          <div class="step active"></div>
+          <div class="step active"></div>
+        </div>
+
+        <h2>Step 4: Review & Submit</h2>
+
+        <div id="reviewContent" style="background: var(--light-bg); padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
+          <!-- Review content will be populated here -->
+        </div>
+
+        <div style="display: flex; gap: 1rem;">
+          <button type="button" class="btn btn-secondary" onclick="goBackToPlayersStep()">← Back</button>
+          <button type="button" class="btn btn-success" onclick="submitTeamRegistration()" style="flex: 1;">
+            <i class="fas fa-check"></i> Submit Registration
+          </button>
+        </div>
+      </div>
+
+      <!-- Success Step -->
+      <div class="form-container hidden" id="successStep">
+        <div style="text-align: center; padding: 2rem;">
+          <div style="font-size: 4rem; margin-bottom: 1rem;">✅</div>
+          <h2>Team Registered Successfully!</h2>
+          <p style="color: var(--text-light); margin: 1rem 0;">Your team is now registered and ready to compete.</p>
+
+          <div id="successSummary" style="background: var(--light-bg); padding: 1.5rem; border-radius: 8px; text-align: left; margin: 1.5rem 0; margin-bottom: 2rem;">
+          </div>
+
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <a href="index.html" class="btn" style="flex: 1; text-align: center;">Back to Home</a>
+            <button type="button" class="btn btn-secondary" onclick="registerAnotherTeam()" style="flex: 1;">Register Another Team</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p style="font-size: 1.5rem; margin-bottom: 1rem;">🏆</p>
+      <p><strong>Sports Arena Hub</strong></p>
+      <p>© 2026 Sports Arena Hub • Made with ❤️ for Sports Lovers</p>
+    </div>
+  </footer>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    let registrationData = {
+      sport: '',
+      teamName: '',
+      players: []
+    };
+
+    const sportNames = {
+      cricket: 'Cricket',
+      kabaddi: 'Kabaddi',
+      volleyball: 'Volleyball'
+    };
+
+    // Check URL params for pre-selected sport
+    function checkUrlParams() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const sport = urlParams.get('sport');
+      if (sport && ['cricket', 'kabaddi', 'volleyball'].includes(sport)) {
+        selectSport(sport);
+      }
+    }
+
+    function selectSport(sport) {
+      registrationData.sport = sport;
+      document.getElementById('sportSelectStep').classList.add('hidden');
+      document.getElementById('teamDetailsStep').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goBackToSportSelection() {
+      registrationData = { sport: '', teamName: '', players: [] };
+      document.getElementById('sportSelectStep').classList.remove('hidden');
+      document.getElementById('teamDetailsStep').classList.add('hidden');
+      document.getElementById('playersStep').classList.add('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function proceedToPlayersStep() {
+      const teamName = document.getElementById('teamName').value.trim();
+      if (!teamName) {
+        alert('Please enter a team name');
+        return;
+      }
+
+      registrationData.teamName = teamName;
+      document.getElementById('teamDetailsStep').classList.add('hidden');
+      document.getElementById('playersStep').classList.remove('hidden');
+      initPlayersForm();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goBackToTeamDetails() {
+      document.getElementById('playersStep').classList.add('hidden');
+      document.getElementById('teamDetailsStep').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function initPlayersForm() {
+      updatePlayerCount();
+    }
+
+    function updatePlayerCount() {
+      const count = parseInt(document.getElementById('playerCount').value) || 11;
+      const container = document.getElementById('playersContainer');
+      container.innerHTML = '';
+
+      for (let i = 0; i < count; i++) {
+        const playerDiv = document.createElement('div');
+        playerDiv.className = 'player-row';
+        playerDiv.innerHTML = `
+          <div>
+            <label style="font-size: 0.85rem;">Player Name ${i === 0 ? '(Captain)' : ''}</label>
+            <input type="text" class="player-name" data-index="${i}" placeholder="Player name">
+          </div>
+          <div>
+            <label style="font-size: 0.85rem;">Age</label>
+            <input type="number" class="player-age" data-index="${i}" placeholder="Age" min="1" max="100">
+          </div>
+          <div>
+            <label style="font-size: 0.85rem;">Reg. No.</label>
+            <input type="text" class="player-regno" data-index="${i}" placeholder="REG001">
+          </div>
+          <div>
+            <label style="font-size: 0.85rem;">Captain</label>
+            <button type="button" class="captain-checkbox ${i === 0 ? 'selected' : ''}" onclick="selectCaptain(${i})">
+              ${i === 0 ? '✓ C' : 'C'}
+            </button>
+          </div>
+        `;
+        container.appendChild(playerDiv);
+
+        // Restore data if exists
+        if (i < registrationData.players.length) {
+          const p = registrationData.players[i];
+          playerDiv.querySelector(`.player-name`).value = p.name || '';
+          playerDiv.querySelector(`.player-age`).value = p.age || '';
+          playerDiv.querySelector(`.player-regno`).value = p.registerNo || '';
+        }
+      }
+
+      // Set first player as captain by default if not already set
+      if (!registrationData.players.some(p => p.isCaptain)) {
+        selectCaptain(0);
+      }
+    }
+
+    function selectCaptain(index) {
+      // Remove previous captain selection
+      document.querySelectorAll('.captain-checkbox').forEach((btn, idx) => {
+        if (idx === index) {
+          btn.classList.add('selected');
+          btn.innerHTML = '✓ C';
+        } else {
+          btn.classList.remove('selected');
+          btn.innerHTML = 'C';
+        }
+      });
+
+      // Update data
+      registrationData.players.forEach((p, idx) => {
+        p.isCaptain = idx === index;
+      });
+    }
+
+    function proceedToReviewStep() {
+      // Collect player data
+      const playerInputs = document.querySelectorAll('.player-row');
+      registrationData.players = [];
+
+      playerInputs.forEach((row, idx) => {
+        const name = row.querySelector('.player-name').value.trim();
+        if (name) {
+          registrationData.players.push({
+            name: name,
+            age: row.querySelector('.player-age').value ? parseInt(row.querySelector('.player-age').value) : null,
+            registerNo: row.querySelector('.player-regno').value.trim() || null,
+            isCaptain: row.querySelector('.captain-checkbox').classList.contains('selected')
+          });
+        }
+      });
+
+      if (registrationData.players.length === 0) {
+        alert('Please add at least one player');
+        return;
+      }
+
+      if (!registrationData.players.some(p => p.isCaptain)) {
+        alert('Please select a captain');
+        return;
+      }
+
+      // Show review
+      displayReview();
+      document.getElementById('playersStep').classList.add('hidden');
+      document.getElementById('reviewStep').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function displayReview() {
+      const reviewContent = document.getElementById('reviewContent');
+      const captain = registrationData.players.find(p => p.isCaptain);
+
+      let html = `
+        <div style="margin-bottom: 1rem;">
+          <p><strong>Sport:</strong> ${sportNames[registrationData.sport]}</p>
+          <p><strong>Team Name:</strong> ${registrationData.teamName}</p>
+          <p><strong>Captain:</strong> ${captain?.name || 'N/A'}</p>
+        </div>
+        <hr style="border: none; border-top: 1px solid var(--border); margin: 1rem 0;">
+        <p style="font-weight: 600; margin-bottom: 0.8rem;">Players (${registrationData.players.length}):</p>
+        <div style="max-height: 300px; overflow-y: auto;">
+      `;
+
+      registrationData.players.forEach((player, idx) => {
+        html += `
+          <div style="padding: 0.6rem; background: white; border-radius: 4px; margin-bottom: 0.5rem; border-left: 3px solid ${player.isCaptain ? 'var(--accent)' : 'var(--border)'};">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span><strong>${player.name}</strong>${player.isCaptain ? ' <span style="color: var(--accent);">(C)</span>' : ''}</span>
+              <div style="font-size: 0.85rem; color: var(--text-light);">
+                ${player.age ? `Age: ${player.age}` : ''}
+                ${player.registerNo ? `| Reg: ${player.registerNo}` : ''}
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      html += '</div>';
+      reviewContent.innerHTML = html;
+    }
+
+    function goBackToPlayersStep() {
+      document.getElementById('reviewStep').classList.add('hidden');
+      document.getElementById('playersStep').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function submitTeamRegistration() {
+      const submitBtn = event.target;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
+
+      try {
+        const payload = {
+          name: registrationData.teamName,
+          sport: registrationData.sport,
+          captain: registrationData.players.find(p => p.isCaptain)?.name || '',
+          players: registrationData.players
+        };
+
+        console.log('Sending registration data to:', `${API_BASE_URL}/api/teams/register`);
+        console.log('Payload:', payload);
+
+        const response = await fetch(`${API_BASE_URL}/api/teams/register`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        console.log('Response status:', response.status);
+        console.log('Response ok:', response.ok);
+
+        if (response.ok) {
+          const result = await response.json();
+          console.log('Registration success:', result);
+          showSuccessMessage(result);
+        } else {
+          const errorText = await response.text();
+          console.error('Server response:', response.status, errorText);
+          throw new Error(`Server error: ${response.status} - ${errorText}`);
+        }
+      } catch (error) {
+        console.error('Registration error:', error);
+        alert(`Registration failed: ${error.message}\n\nPlease check browser console (F12) for details.`);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-check"></i> Submit Registration';
+      }
+    }
+
+    function showSuccessMessage(teamData) {
+      document.getElementById('reviewStep').classList.add('hidden');
+      document.getElementById('successStep').classList.remove('hidden');
+
+      const successSummary = document.getElementById('successSummary');
+      const captain = registrationData.players.find(p => p.isCaptain);
+
+      successSummary.innerHTML = `
+        <p><strong>Sport:</strong> ${sportNames[registrationData.sport]}</p>
+        <p><strong>Team Name:</strong> ${registrationData.teamName}</p>
+        <p><strong>Team ID:</strong> #${teamData.id}</p>
+        <p><strong>Captain:</strong> ${captain?.name}</p>
+        <p><strong>Players:</strong> ${registrationData.players.length}</p>
+      `;
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function registerAnotherTeam() {
+      registrationData = { sport: '', teamName: '', players: [] };
+      document.getElementById('sportSelectStep').classList.remove('hidden');
+      document.getElementById('teamDetailsStep').classList.add('hidden');
+      document.getElementById('playersStep').classList.add('hidden');
+      document.getElementById('reviewStep').classList.add('hidden');
+      document.getElementById('successStep').classList.add('hidden');
+      document.getElementById('teamName').value = '';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('Page loaded');
+      console.log('API_BASE_URL:', API_BASE_URL);
+      
+      // Test backend connection
+      fetch(`${API_BASE_URL}/api/teams`)
+        .then(r => r.json())
+        .then(data => {
+          console.log('✅ Backend connected! Teams loaded:', data.length);
+        })
+        .catch(err => {
+          console.error('❌ Backend connection failed:', err);
+          console.warn('Make sure backend is running: python backend/mock_api.py');
+        });
+      
+      checkUrlParams();
+    });
+  </script>
+
+</body>
+
+</html>

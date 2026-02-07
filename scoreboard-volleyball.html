@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Volleyball Scoreboard - Sports Arena Hub</title>
+    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <span style="color: var(--volleyball-primary);">🏐</span> Volleyball Scoring
+                </div>
+                <div class="nav-links">
+                    <a href="#" onclick="if(confirm('Exit match?')) window.location.href='admin.html'">Exit Match</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Scoreboard -->
+    <section class="container" id="scoreboardSection" style="padding-top: 2rem;">
+
+        <!-- Score Display -->
+        <div class="scoreboard volleyball">
+            <div style="text-align: center; margin-bottom: 1rem;">
+                <span style="font-size: 0.9rem; opacity: 0.7;" id="matchTypeLabel">First to 25 points wins</span>
+            </div>
+
+            <!-- Teams and Score -->
+            <div
+                style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 2rem; align-items: center; text-align: center;">
+                <div>
+                    <div style="font-size: 1.1rem; opacity: 0.8;" id="team1NameDisplay">Team 1</div>
+                    <div class="score-big" style="font-size: 5rem;" id="team1Score">0</div>
+                    <div style="margin-top: 1rem;">
+                        <button class="control-btn btn-success" style="padding: 1.5rem 3rem; font-size: 1.5rem;"
+                            onclick="scorePoint(1)">
+                            +1 Point
+                        </button>
+                    </div>
+                </div>
+
+                <div style="font-size: 1.5rem; opacity: 0.5;">VS</div>
+
+                <div>
+                    <div style="font-size: 1.1rem; opacity: 0.8;" id="team2NameDisplay">Team 2</div>
+                    <div class="score-big" style="font-size: 5rem;" id="team2Score">0</div>
+                    <div style="margin-top: 1rem;">
+                        <button class="control-btn btn-success" style="padding: 1.5rem 3rem; font-size: 1.5rem;"
+                            onclick="scorePoint(2)">
+                            +1 Point
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sets Display (for match points mode) -->
+            <div id="setsDisplay" class="hidden" style="margin-top: 2rem; text-align: center;">
+                <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 0.5rem;">Sets Won</div>
+                <div style="display: flex; justify-content: center; gap: 3rem;">
+                    <div>
+                        <span id="team1Sets" style="font-size: 2rem; font-weight: 700;">0</span>
+                    </div>
+                    <div>
+                        <span id="team2Sets" style="font-size: 2rem; font-weight: 700;">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Serve Indicator -->
+            <div style="margin-top: 2rem; text-align: center;">
+                <div style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 0.5rem;">Serving</div>
+                <div style="display: flex; justify-content: center; gap: 2rem;">
+                    <button class="control-btn" id="serveBtn1" onclick="setServe(1)"
+                        style="padding: 0.75rem 1.5rem; background: var(--light-bg);">
+                        <span id="serve1Name">Team 1</span> 🏐
+                    </button>
+                    <button class="control-btn" id="serveBtn2" onclick="setServe(2)"
+                        style="padding: 0.75rem 1.5rem; background: var(--light-bg);">
+                        <span id="serve2Name">Team 2</span> 🏐
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div style="max-width: 500px; margin: 2rem auto; text-align: center;">
+            <h3 style="margin-bottom: 1rem; color: var(--text-dark);">Quick Actions</h3>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <button class="control-btn btn-extra" style="padding: 0.75rem 1.5rem;" onclick="undoLast()">
+                    <i class="fas fa-undo"></i> Undo Last
+                </button>
+                <button class="control-btn btn-run" style="padding: 0.75rem 1.5rem;" onclick="swapSides()">
+                    <i class="fas fa-exchange-alt"></i> Swap Sides
+                </button>
+            </div>
+        </div>
+
+        <!-- Set Results (for match points mode) -->
+        <div id="setHistory" class="hidden" style="max-width: 500px; margin: 2rem auto;">
+            <h3 style="text-align: center; margin-bottom: 1rem; color: var(--text-dark);">Set History</h3>
+            <div id="setHistoryList"
+                style="background: white; border-radius: 8px; padding: 1rem; box-shadow: var(--shadow-sm);">
+                <!-- Set results will appear here -->
+            </div>
+        </div>
+
+        <!-- Match End -->
+        <div id="matchEnd" class="hidden"
+            style="text-align: center; padding: 3rem; background: white; border-radius: 12px; margin-top: 2rem;">
+            <h2>🏆 Match Complete!</h2>
+            <p style="font-size: 1.5rem; font-weight: 700; margin: 1rem 0;" id="matchResult"></p>
+            <button class="btn" onclick="finishMatch()">Save & Exit</button>
+        </div>
+    </section>
+
+    <footer style="margin-top: 3rem;">
+        <div class="container">
+            <p>🏆 Sports Arena Hub</p>
+        </div>
+    </footer>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        // Match State
+        let matchId = '';
+        let team1 = { id: '', name: '', score: 0, sets: 0 };
+        let team2 = { id: '', name: '', score: 0, sets: 0 };
+        let matchType = 'ttp'; // ttp or match
+        let targetPoints = 25;
+        let setsToWin = 2;
+        let currentSet = 1;
+        let serving = 1;
+        let scoreHistory = [];
+        let setResults = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // No auth required - open access
+
+            const params = new URLSearchParams(window.location.search);
+            matchId = params.get('id');
+
+            if (matchId) {
+                await loadMatchData();
+            }
+        });
+
+        async function loadMatchData() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/matches/${matchId}`);
+                if (response.ok) {
+                    const match = await response.json();
+                    team1 = { id: match.team1_id, name: match.team1_name, score: 0, sets: 0 };
+                    team2 = { id: match.team2_id, name: match.team2_name, score: 0, sets: 0 };
+                    matchType = match.config?.match_type || 'ttp';
+                    targetPoints = match.config?.target_points || 25;
+
+                    // Update UI
+                    document.getElementById('team1NameDisplay').textContent = team1.name;
+                    document.getElementById('team2NameDisplay').textContent = team2.name;
+                    document.getElementById('serve1Name').textContent = team1.name;
+                    document.getElementById('serve2Name').textContent = team2.name;
+
+                    if (matchType === 'ttp') {
+                        document.getElementById('matchTypeLabel').textContent = `First to ${targetPoints} points wins`;
+                    } else {
+                        document.getElementById('matchTypeLabel').textContent = `Best of 3 sets (${targetPoints} points each)`;
+                        document.getElementById('setsDisplay').classList.remove('hidden');
+                        document.getElementById('setHistory').classList.remove('hidden');
+                    }
+
+                    setServe(1);
+                }
+            } catch (error) {
+                console.error('Error loading match:', error);
+            }
+        }
+
+        function setServe(team) {
+            serving = team;
+            document.getElementById('serveBtn1').style.background = team === 1 ? 'var(--volleyball-light)' : 'var(--light-bg)';
+            document.getElementById('serveBtn1').style.color = team === 1 ? 'white' : 'var(--text-dark)';
+            document.getElementById('serveBtn2').style.background = team === 2 ? 'var(--volleyball-light)' : 'var(--light-bg)';
+            document.getElementById('serveBtn2').style.color = team === 2 ? 'white' : 'var(--text-dark)';
+        }
+
+        function scorePoint(team) {
+            // Save to history for undo
+            scoreHistory.push({
+                team1Score: team1.score,
+                team2Score: team2.score,
+                serving: serving
+            });
+
+            if (team === 1) {
+                team1.score++;
+                if (serving !== 1) setServe(1);
+            } else {
+                team2.score++;
+                if (serving !== 2) setServe(2);
+            }
+
+            updateScoreDisplay();
+            checkSetWin();
+            saveScore('point', team, 1);
+        }
+
+        function undoLast() {
+            if (scoreHistory.length > 0) {
+                const last = scoreHistory.pop();
+                team1.score = last.team1Score;
+                team2.score = last.team2Score;
+                setServe(last.serving);
+                updateScoreDisplay();
+            }
+        }
+
+        function swapSides() {
+            // Swap team displays
+            const tempName = team1.name;
+            team1.name = team2.name;
+            team2.name = tempName;
+
+            const tempScore = team1.score;
+            team1.score = team2.score;
+            team2.score = tempScore;
+
+            updateScoreDisplay();
+            document.getElementById('team1NameDisplay').textContent = team1.name;
+            document.getElementById('team2NameDisplay').textContent = team2.name;
+            document.getElementById('serve1Name').textContent = team1.name;
+            document.getElementById('serve2Name').textContent = team2.name;
+        }
+
+        function updateScoreDisplay() {
+            document.getElementById('team1Score').textContent = team1.score;
+            document.getElementById('team2Score').textContent = team2.score;
+
+            if (matchType === 'match') {
+                document.getElementById('team1Sets').textContent = team1.sets;
+                document.getElementById('team2Sets').textContent = team2.sets;
+            }
+        }
+
+        function checkSetWin() {
+            const winMargin = 2;
+            const minPoints = targetPoints;
+
+            // Check if either team has won the set
+            let setWinner = null;
+
+            if (team1.score >= minPoints && team1.score - team2.score >= winMargin) {
+                setWinner = 1;
+            } else if (team2.score >= minPoints && team2.score - team1.score >= winMargin) {
+                setWinner = 2;
+            }
+
+            if (setWinner) {
+                if (matchType === 'ttp') {
+                    // Single set match - game over
+                    showMatchEnd(setWinner);
+                } else {
+                    // Match points mode - track sets
+                    if (setWinner === 1) {
+                        team1.sets++;
+                    } else {
+                        team2.sets++;
+                    }
+
+                    // Record set result
+                    setResults.push({
+                        set: currentSet,
+                        team1: team1.score,
+                        team2: team2.score,
+                        winner: setWinner === 1 ? team1.name : team2.name
+                    });
+                    updateSetHistory();
+
+                    // Check for match win
+                    if (team1.sets >= setsToWin) {
+                        showMatchEnd(1);
+                    } else if (team2.sets >= setsToWin) {
+                        showMatchEnd(2);
+                    } else {
+                        // Start new set
+                        startNewSet();
+                    }
+                }
+            }
+        }
+
+        function startNewSet() {
+            currentSet++;
+            team1.score = 0;
+            team2.score = 0;
+            scoreHistory = [];
+
+            // Alternate serve
+            setServe(currentSet % 2 === 0 ? 2 : 1);
+
+            updateScoreDisplay();
+            document.getElementById('matchTypeLabel').textContent = `Set ${currentSet} - First to ${targetPoints}`;
+
+            alert(`Set ${currentSet} starting!`);
+        }
+
+        function updateSetHistory() {
+            const list = document.getElementById('setHistoryList');
+            list.innerHTML = setResults.map(set => `
+        <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border);">
+          <span>Set ${set.set}</span>
+          <span><strong>${set.team1}</strong> - <strong>${set.team2}</strong></span>
+          <span style="color: var(--volleyball-primary);">${set.winner}</span>
+        </div>
+      `).join('');
+        }
+
+        function showMatchEnd(winner) {
+            const winnerName = winner === 1 ? team1.name : team2.name;
+            let result = '';
+
+            if (matchType === 'ttp') {
+                result = `${winnerName} wins ${team1.score > team2.score ? team1.score : team2.score}-${team1.score > team2.score ? team2.score : team1.score}!`;
+            } else {
+                result = `${winnerName} wins ${winner === 1 ? team1.sets : team2.sets}-${winner === 1 ? team2.sets : team1.sets} sets!`;
+            }
+
+            document.getElementById('matchResult').textContent = result;
+            document.getElementById('matchEnd').classList.remove('hidden');
+        }
+
+        async function saveScore(type, team, points) {
+            try {
+                await fetch(`${API_BASE_URL}/api/matches/${matchId}/score`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(typeof getAuthHeaders === 'function' ? getAuthHeaders() : {})
+                    },
+                    body: JSON.stringify({
+                        set: currentSet,
+                        team1_score: team1.score,
+                        team2_score: team2.score,
+                        team1_sets: team1.sets,
+                        team2_sets: team2.sets,
+                        event: { type, team, points }
+                    })
+                });
+            } catch (error) {
+                console.error('Error saving score:', error);
+            }
+        }
+
+        async function finishMatch() {
+            try {
+                await fetch(`${API_BASE_URL}/api/matches/${matchId}/complete`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...(typeof getAuthHeaders === 'function' ? getAuthHeaders() : {})
+                    },
+                    body: JSON.stringify({
+                        result: document.getElementById('matchResult').textContent,
+                        team1_score: team1.score,
+                        team2_score: team2.score,
+                        team1_sets: team1.sets,
+                        team2_sets: team2.sets,
+                        sets: setResults
+                    })
+                });
+                window.location.href = 'live_score.html';
+            } catch (error) {
+                console.error('Error finishing match:', error);
+                window.location.href = 'live_score.html';
+            }
+        }
+    </script>
+</body>
+
+</html>
