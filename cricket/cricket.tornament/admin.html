@@ -338,7 +338,7 @@
 
     <!-- Appwrite SDK -->
     <script src="https://cdn.jsdelivr.net/npm/appwrite@latest"></script>
-    
+
     <!-- Configuration & Setup -->
     <script src="../js/config.js"></script>
     <script src="../js/appwrite-sdk.js"></script>
@@ -541,36 +541,46 @@
 
         // Start Match
         async function startMatch() {
-            const venue = document.getElementById('venue').value.trim() || 'Not specified';
-            const today = new Date();
-            const dateStr = today.toISOString().split('T')[0];
-            const timeStr = today.toTimeString().split(' ')[0].substring(0, 5);
+            const venue = document.getElementById('venue').value.trim() || 'Sports Arena';
 
+            // Build umpire name string
+            let umpireName = 'Match Umpire';
+            if (adminDetails.umpire1 || adminDetails.umpire2) {
+                const umpires = [adminDetails.umpire1, adminDetails.umpire2].filter(u => u);
+                umpireName = umpires.join(' & ');
+            }
+
+            // Match data matching backend MatchCreate model
             let matchData = {
                 sport: selectedSport,
-                team1_id: parseInt(selectedTeam1.id),
-                team2_id: parseInt(selectedTeam2.id),
-                date: dateStr,
-                time: timeStr,
-                venue: venue
+                team1_id: String(selectedTeam1.id),    // Backend expects string
+                team2_id: String(selectedTeam2.id),    // Backend expects string
+                team1_name: selectedTeam1.name,        // REQUIRED by backend
+                team2_name: selectedTeam2.name,        // REQUIRED by backend
+                venue: venue,
+                admin_name: adminDetails.name || 'Match Host',
+                umpire_name: umpireName,
+                total_overs: 20  // Default overs
             };
 
             // Add sport-specific config
             if (selectedSport === 'cricket') {
-                matchData.total_overs = parseInt(document.getElementById('overs').value);
+                matchData.total_overs = parseInt(document.getElementById('overs').value) || 10;
             } else if (selectedSport === 'kabaddi') {
-                matchData.half_duration = parseInt(document.getElementById('duration').value);
+                matchData.total_overs = parseInt(document.getElementById('duration').value) || 20; // Reuse field for duration
             } else if (selectedSport === 'volleyball') {
                 const matchType = document.querySelector('input[name="volleyType"]:checked').value;
                 if (matchType === 'ttp') {
-                    matchData.ttp_points = parseInt(document.getElementById('targetPoints').value);
+                    matchData.total_overs = parseInt(document.getElementById('targetPoints').value) || 25; // Reuse for target points
                 } else {
-                    matchData.total_sets = 3;
+                    matchData.total_overs = 3; // Sets
                 }
             }
 
+            console.log('Creating match:', matchData);
+
             try {
-                const response = await fetch(`${API_BASE_URL}/api/matches`, {
+                const response = await fetch(`${API_BASE_URL}/api/matches/create`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

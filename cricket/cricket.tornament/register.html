@@ -154,8 +154,8 @@
 
         <div style="display: flex; gap: 1rem; margin-top: 2rem;">
           <button type="button" class="btn btn-secondary" onclick="goBackToSportSelection()">← Back</button>
-          <button type="button" class="btn" onclick="proceedToPlayersStep()"
-            style="flex: 1;">Next: Add Players →</button>
+          <button type="button" class="btn" onclick="proceedToPlayersStep()" style="flex: 1;">Next: Add Players
+            →</button>
         </div>
       </div>
 
@@ -168,7 +168,8 @@
         </div>
 
         <h2>Step 3: Add Players</h2>
-        <p style="color: var(--text-light); margin-bottom: 1rem;">Add player names, ages (optional), and register numbers (optional). Mark one player as Captain (C).</p>
+        <p style="color: var(--text-light); margin-bottom: 1rem;">Add player names, ages (optional), and register
+          numbers (optional). Mark one player as Captain (C).</p>
 
         <div id="playersContainer" style="margin-bottom: 1.5rem;">
           <!-- Players will be added here dynamically -->
@@ -184,8 +185,7 @@
 
         <div style="display: flex; gap: 1rem; margin-top: 2rem;">
           <button type="button" class="btn btn-secondary" onclick="goBackToTeamDetails()">← Back</button>
-          <button type="button" class="btn" onclick="proceedToReviewStep()"
-            style="flex: 1;">Next: Review →</button>
+          <button type="button" class="btn" onclick="proceedToReviewStep()" style="flex: 1;">Next: Review →</button>
         </div>
       </div>
 
@@ -199,7 +199,8 @@
 
         <h2>Step 4: Review & Submit</h2>
 
-        <div id="reviewContent" style="background: var(--light-bg); padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
+        <div id="reviewContent"
+          style="background: var(--light-bg); padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem;">
           <!-- Review content will be populated here -->
         </div>
 
@@ -218,12 +219,14 @@
           <h2>Team Registered Successfully!</h2>
           <p style="color: var(--text-light); margin: 1rem 0;">Your team is now registered and ready to compete.</p>
 
-          <div id="successSummary" style="background: var(--light-bg); padding: 1.5rem; border-radius: 8px; text-align: left; margin: 1.5rem 0; margin-bottom: 2rem;">
+          <div id="successSummary"
+            style="background: var(--light-bg); padding: 1.5rem; border-radius: 8px; text-align: left; margin: 1.5rem 0; margin-bottom: 2rem;">
           </div>
 
           <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
             <a href="index.html" class="btn" style="flex: 1; text-align: center;">Back to Home</a>
-            <button type="button" class="btn btn-secondary" onclick="registerAnotherTeam()" style="flex: 1;">Register Another Team</button>
+            <button type="button" class="btn btn-secondary" onclick="registerAnotherTeam()" style="flex: 1;">Register
+              Another Team</button>
           </div>
         </div>
       </div>
@@ -241,12 +244,12 @@
 
   <!-- Appwrite SDK -->
   <script src="https://cdn.jsdelivr.net/npm/appwrite@latest"></script>
-  
+
   <!-- Configuration & Setup -->
   <script src="../js/config.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/appwrite-sdk.js"></script>
-  
+
   <script>
     let registrationData = {
       sport: '',
@@ -459,33 +462,30 @@
 
         console.log('Sending registration data to:', `${API_BASE_URL}/api/teams/register`);
         console.log('Payload:', payload);
-        // Use Appwrite SDK to register (frontend writes to Appwrite registrations collection)
-        if (typeof appwriteService === 'undefined' || !appwriteService.initialized) {
-          // Try to initialize if not done
-          try { await appwriteService.init(); } catch (e) { console.error('Appwrite init failed', e); }
-        }
 
-        const registrationResponse = await appwriteService.registerPlayer({
-          name: payload.name,
-          email: '',
-          phone: '',
-          role: 'manager',
-          team_id: payload.name.toLowerCase().replace(/\s+/g, '-'),
-          players_list: payload.players,
-          captain: payload.captain
+        // Call backend API which has Appwrite API key configured
+        const response = await fetch(`${API_BASE_URL}/api/teams/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
         });
 
-        if (registrationResponse && (registrationResponse.$id || registrationResponse.id)) {
-          console.log('Registration success:', registrationResponse);
-          // Appwrite returns $id
-          showSuccessMessage({ id: registrationResponse.$id || registrationResponse.id });
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }));
+          throw new Error(errorData.detail || `HTTP ${response.status}`);
+        }
+
+        const registrationResponse = await response.json();
+        console.log('Registration success:', registrationResponse);
+
+        if (registrationResponse && (registrationResponse.id || registrationResponse.$id)) {
+          showSuccessMessage({ id: registrationResponse.id || registrationResponse.$id });
         } else {
-          console.error('Registration failed, no response from Appwrite:', registrationResponse);
-          throw new Error('Registration failed (no response)');
+          throw new Error('Registration failed (no ID returned)');
         }
       } catch (error) {
         console.error('Registration error:', error);
-        alert(`Registration failed: ${error.message}\n\nPlease check browser console (F12) for details.`);
+        alert(`Registration failed: ${error.message}\n\nPlease check:\n1. Backend is running on ${API_BASE_URL}\n2. Check browser console (F12) for details.`);
         submitBtn.disabled = false;
         submitBtn.innerHTML = '<i class="fas fa-check"></i> Submit Registration';
       }
@@ -524,7 +524,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       console.log('Page loaded');
       console.log('API_BASE_URL:', API_BASE_URL);
-      
+
       // Test backend connection
       fetch(`${API_BASE_URL}/api/teams`)
         .then(r => r.json())
@@ -535,11 +535,11 @@
           console.error('❌ Backend connection failed:', err);
           console.warn('Make sure backend is running: python backend/mock_api.py');
         });
-      
+
       checkUrlParams();
     });
   </script>
-  
+
   <!-- Appwrite Registration Handler -->
   <script src="../js/registration-handler.js"></script>
 
