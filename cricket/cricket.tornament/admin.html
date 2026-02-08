@@ -336,7 +336,13 @@
         </div>
     </footer>
 
+    <!-- Appwrite SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/appwrite@latest"></script>
+    
+    <!-- Configuration & Setup -->
     <script src="../js/config.js"></script>
+    <script src="../js/appwrite-sdk.js"></script>
+    <script src="../js/admin-handler.js"></script>
     <script>
         // State Management
         let adminDetails = { name: '', umpire1: '', umpire2: '' };
@@ -436,16 +442,21 @@
         }
 
         function renderTeamCards(teams, forTeamSlot) {
-            return teams.map(team => `
-                <div class="team-select-card" 
-                     onclick="selectTeam(${forTeamSlot}, ${team.id}, '${team.name}', '${team.symbol || sportIcons[selectedSport]}')"
-                     id="team${forTeamSlot}-card-${team.id}">
-                    <div class="check-icon"><i class="fas fa-check"></i></div>
-                    <div class="team-icon">${team.symbol || sportIcons[selectedSport]}</div>
-                    <h4>${team.name}</h4>
-                    <p>${team.captain || 'Captain'}</p>
-                </div>
-            `).join('');
+            return teams.map(team => {
+                const captain = team.captain || (team.players?.[0]?.name || 'Captain TBA');
+                const playerCount = team.players?.length || 0;
+                return `
+                    <div class="team-select-card" 
+                         onclick="selectTeam(${forTeamSlot}, ${team.id}, '${team.name.replace(/'/g, "\\'")}', '${team.symbol || sportIcons[selectedSport]}')"
+                         id="team${forTeamSlot}-card-${team.id}">
+                        <div class="check-icon"><i class="fas fa-check"></i></div>
+                        <div class="team-icon">${team.symbol || sportIcons[selectedSport]}</div>
+                        <h4>${team.name}</h4>
+                        <p style="font-weight: 600; margin: 0.5rem 0; color: var(--accent);">👑 ${captain}</p>
+                        <p style="font-size: 0.85rem; color: var(--text-light);">${playerCount} Players</p>
+                    </div>
+                `;
+            }).join('');
         }
 
         function selectTeam(slot, teamId, teamName, teamIcon) {
