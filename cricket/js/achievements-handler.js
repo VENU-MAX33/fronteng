@@ -268,40 +268,6 @@ async function awardAchievement(data) {
 }
 
 /**
- * Show alert message
- */
-function showAlert(message, type = 'info') {
-    let alertContainer = document.getElementById('alertContainer');
-    if (!alertContainer) {
-        alertContainer = document.createElement('div');
-        alertContainer.id = 'alertContainer';
-        alertContainer.style.cssText = `
-            position: fixed;
-            top: 100px;
-            right: 20px;
-            z-index: 1000;
-            max-width: 400px;
-        `;
-        document.body.appendChild(alertContainer);
-    }
-
-    const alert = document.createElement('div');
-    alert.style.cssText = `
-        padding: 1rem;
-        margin-bottom: 1rem;
-        border-radius: 8px;
-        background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
-        color: white;
-        font-weight: 500;
-    `;
-    alert.textContent = message;
-
-    alertContainer.appendChild(alert);
-    setTimeout(() => alert.remove(), 4000);
-    console.log(`[${type.toUpperCase()}] ${message}`);
-}
-
-/**
  * Switch sport tab
  */
 async function showSport(sport) {

@@ -533,14 +533,15 @@
         })
         .catch(err => {
           console.error('❌ Backend connection failed:', err);
-          console.warn('Make sure backend is running: python backend/mock_api.py');
+          console.warn('Make sure backend is running: python backend/main.py');
         });
 
       checkUrlParams();
     });
   </script>
 
-  <!-- Appwrite Registration Handler -->
+  <!-- Utilities & Handlers -->
+  <script src="../js/utils.js"></script>
   <script src="../js/registration-handler.js"></script>
 
 </body>
